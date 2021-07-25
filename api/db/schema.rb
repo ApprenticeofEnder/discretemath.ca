@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_29_183635) do
+ActiveRecord::Schema.define(version: 2021_07_25_123250) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,33 @@ ActiveRecord::Schema.define(version: 2021_06_29_183635) do
     t.string "source_identifier"
     t.date "date"
     t.index ["course_session_id"], name: "index_lectures_on_course_session_id"
+  end
+
+  create_table "linked_question_option_answers", force: :cascade do |t|
+    t.text "body"
+    t.string "format"
+    t.bigint "linked_question_id", null: false
+    t.bigint "linked_question_option_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["linked_question_id"], name: "index_linked_question_option_answers_on_linked_question_id"
+    t.index ["linked_question_option_id"], name: "linked_question_option_answers_on_linked_question_option_id"
+  end
+
+  create_table "linked_question_options", force: :cascade do |t|
+    t.text "body"
+    t.string "format"
+    t.bigint "linked_question_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["linked_question_id"], name: "index_linked_question_options_on_linked_question_id"
+  end
+
+  create_table "linked_questions", force: :cascade do |t|
+    t.text "body"
+    t.string "format"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "multiple_choice_answers", force: :cascade do |t|
@@ -113,6 +140,9 @@ ActiveRecord::Schema.define(version: 2021_06_29_183635) do
 
   add_foreign_key "course_sessions", "courses"
   add_foreign_key "lectures", "course_sessions"
+  add_foreign_key "linked_question_option_answers", "linked_question_options"
+  add_foreign_key "linked_question_option_answers", "linked_questions"
+  add_foreign_key "linked_question_options", "linked_questions"
   add_foreign_key "multiple_choice_answers", "multiple_choice_questions"
   add_foreign_key "multiple_choice_questions", "courses"
   add_foreign_key "questions", "courses"
